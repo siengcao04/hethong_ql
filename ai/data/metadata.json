@@ -1,0 +1,12 @@
+{
+    "total_records": 86,
+    "exported_at": "2026-01-10 09:35:55",
+    "features": {
+        "diem_chuyen_can": "Điểm chuyên cần (0-10)",
+        "diem_giua_ky": "Điểm giữa kỳ (0-10)",
+        "diem_cuoi_ky": "Điểm cuối kỳ (0-10)",
+        "so_buoi_nghi": "Số buổi nghỉ",
+        "so_tin_chi": "Số tín chỉ môn học"
+    },
+    "target": "trang_thai (Giỏi, Khá, Trung bình, Yếu)"
+}

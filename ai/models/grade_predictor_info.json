@@ -1,0 +1,17 @@
+{
+  "accuracy": 0.9444444444444444,
+  "trained_at": "2026-01-10 16:37:49",
+  "features": [
+    "diem_chuyen_can",
+    "diem_giua_ky",
+    "diem_cuoi_ky",
+    "so_buoi_nghi",
+    "so_tin_chi"
+  ],
+  "labels": [
+    "Giỏi",
+    "Khá",
+    "Trung bình",
+    "Yếu"
+  ]
+}
