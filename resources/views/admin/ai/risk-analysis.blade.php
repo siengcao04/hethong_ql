@@ -6,7 +6,7 @@
 <div class="container-fluid">
     <div class="row mb-4">
         <div class="col-12">
-            <h2 class="mb-3">⚠️ Phân tích sinh viên nguy cơ</h2>
+            <h2 class="mb-3"> Phân tích sinh viên nguy cơ</h2>
             <p class="text-muted">Danh sách sinh viên có nhiều môn yếu, cần quan tâm và hỗ trợ</p>
         </div>
     </div>

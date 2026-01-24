@@ -6,7 +6,7 @@
 <div class="container-fluid">
     <div class="row mb-4">
         <div class="col-12">
-            <h2 class="mb-3">🤖 Dự đoán kết quả học tập bằng AI</h2>
+            <h2 class="mb-3"> Dự đoán kết quả học tập bằng AI</h2>
         </div>
     </div>
 
@@ -29,7 +29,7 @@
         <div class="col-md-4">
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">📊 Thông tin mô hình AI</h5>
+                    <h5 class="mb-0"> Thông tin mô hình AI</h5>
                 </div>
                 <div class="card-body">
                     @if($isModelReady)
@@ -68,7 +68,7 @@
             <!-- Hướng dẫn -->
             <div class="card shadow-sm">
                 <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">💡 Hướng dẫn</h5>
+                    <h5 class="mb-0">Hướng dẫn</h5>
                 </div>
                 <div class="card-body">
                     <ol class="mb-0">
@@ -87,12 +87,44 @@
         <div class="col-md-8">
             <div class="card shadow-sm">
                 <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">📝 Nhập thông tin để dự đoán</h5>
+                    <h5 class="mb-0"> Nhập thông tin để dự đoán</h5>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('admin.ai.predict') }}" method="POST">
                         @csrf
                         <div class="row">
+                            <!-- Chọn sinh viên -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Chọn sinh viên <span class="text-danger">*</span></label>
+                                <select name="sinh_vien_id" class="form-select @error('sinh_vien_id') is-invalid @enderror" required>
+                                    <option value="">-- Chọn sinh viên --</option>
+                                    @foreach($sinhViens as $sv)
+                                        <option value="{{ $sv->id }}" {{ old('sinh_vien_id') == $sv->id ? 'selected' : '' }}>
+                                            {{ $sv->ma_sinh_vien }} - {{ $sv->user->ho_ten }} ({{ $sv->lop->ten_lop }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('sinh_vien_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Chọn môn học -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Chọn môn học <span class="text-danger">*</span></label>
+                                <select name="mon_hoc_id" class="form-select @error('mon_hoc_id') is-invalid @enderror" required>
+                                    <option value="">-- Chọn môn học --</option>
+                                    @foreach($monHocs as $mh)
+                                        <option value="{{ $mh->id }}" {{ old('mon_hoc_id') == $mh->id ? 'selected' : '' }}>
+                                            {{ $mh->ma_mon }} - {{ $mh->ten_mon }} ({{ $mh->so_tin_chi }} TC)
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('mon_hoc_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Điểm chuyên cần (0-10) <span class="text-danger">*</span></label>
                                 <input type="number" name="diem_chuyen_can" class="form-control @error('diem_chuyen_can') is-invalid @enderror" 
@@ -159,11 +191,13 @@
             @if(session('prediction'))
                 <div class="card shadow-sm mt-4">
                     <div class="card-header bg-dark text-white">
-                        <h5 class="mb-0">🎯 Kết quả dự đoán</h5>
+                        <h5 class="mb-0"> Kết quả dự đoán</h5>
                     </div>
                     <div class="card-body">
                         @php
                             $pred = session('prediction');
+                            $sinhVien = session('sinhVien');
+                            $monHoc = session('monHoc');
                             $statusClass = [
                                 'Giỏi' => 'success',
                                 'Khá' => 'info',
@@ -178,10 +212,15 @@
                             ];
                         @endphp
 
+                        <div class="alert alert-success">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <strong>Dự đoán cho:</strong> {{ $sinhVien->user->ho_ten }} ({{ $sinhVien->ma_sinh_vien }}) - Môn {{ $monHoc->ten_mon }}
+                        </div>
+
                         <div class="row align-items-center">
                             <div class="col-md-6">
                                 <h3 class="mb-3">
-                                    Dự đoán: 
+                                    Kết quả dự đoán: 
                                     <span class="badge bg-{{ $statusClass[$pred['prediction']] ?? 'secondary' }} fs-4">
                                         <i class="bi bi-{{ $statusIcon[$pred['prediction']] ?? 'question-circle' }}"></i>
                                         {{ $pred['prediction'] }}
@@ -225,6 +264,12 @@
                                 <strong>Cảnh báo:</strong> Sinh viên có nguy cơ rớt môn. Cần tư vấn và hỗ trợ thêm!
                             </div>
                         @endif
+
+                        <div class="mt-3">
+                            <a href="{{ route('admin.ai.history') }}" class="btn btn-outline-primary">
+                                <i class="bi bi-clock-history"></i> Xem lịch sử dự đoán
+                            </a>
+                        </div>
                     </div>
                 </div>
             @endif

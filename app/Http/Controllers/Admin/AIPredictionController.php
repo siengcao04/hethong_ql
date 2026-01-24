@@ -25,22 +25,27 @@ class AIPredictionController extends Controller
         $modelInfo = $this->aiService->getModelInfo();
         $isModelReady = $this->aiService->isModelReady();
         
+        $sinhViens = SinhVien::with('lop')->orderBy('ma_sinh_vien')->get();
         $monHocs = MonHoc::orderBy('ten_mon')->get();
         $lops = Lop::with('khoa')->orderBy('ten_lop')->get();
 
-        return view('admin.ai.index', compact('modelInfo', 'isModelReady', 'monHocs', 'lops'));
+        return view('admin.ai.index', compact('modelInfo', 'isModelReady', 'sinhViens', 'monHocs', 'lops'));
     }
 
     // Dự đoán trực tiếp từ form
     public function predict(Request $request)
     {
         $request->validate([
+            'sinh_vien_id' => 'required|exists:sinh_viens,id',
+            'mon_hoc_id' => 'required|exists:mon_hocs,id',
             'diem_chuyen_can' => 'required|numeric|min:0|max:10',
             'diem_giua_ky' => 'required|numeric|min:0|max:10',
             'diem_cuoi_ky' => 'required|numeric|min:0|max:10',
             'so_buoi_nghi' => 'required|integer|min:0',
             'so_tin_chi' => 'required|integer|min:1|max:6',
         ], [
+            'sinh_vien_id.required' => 'Vui lòng chọn sinh viên',
+            'mon_hoc_id.required' => 'Vui lòng chọn môn học',
             'diem_chuyen_can.required' => 'Vui lòng nhập điểm chuyên cần',
             'diem_giua_ky.required' => 'Vui lòng nhập điểm giữa kỳ',
             'diem_cuoi_ky.required' => 'Vui lòng nhập điểm cuối kỳ',
@@ -58,9 +63,22 @@ class AIPredictionController extends Controller
             return back()->with('error', 'Không thể dự đoán. Vui lòng kiểm tra lại hệ thống AI.');
         }
 
+        // Lưu lịch sử dự đoán
+        DuDoanHocTap::create([
+            'sinh_vien_id' => $request->sinh_vien_id,
+            'mon_hoc_id' => $request->mon_hoc_id,
+            'du_doan' => $result['prediction'],
+            'do_tin_cay' => $result['confidence'],
+        ]);
+
+        $sinhVien = SinhVien::find($request->sinh_vien_id);
+        $monHoc = MonHoc::find($request->mon_hoc_id);
+
         return back()->with([
-            'success' => 'Dự đoán thành công!',
-            'prediction' => $result
+            'success' => 'Dự đoán thành công và đã lưu vào lịch sử!',
+            'prediction' => $result,
+            'sinhVien' => $sinhVien,
+            'monHoc' => $monHoc
         ]);
     }
 

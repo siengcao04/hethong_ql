@@ -33,6 +33,6 @@ class DatabaseSeeder extends Seeder
             'role_id' => 1, // admin
         ]);
 
-        $this->command->info('✅ Hoàn thành seeding database!');
+        $this->command->info(' Hoàn thành seeding database!');
     }
 }

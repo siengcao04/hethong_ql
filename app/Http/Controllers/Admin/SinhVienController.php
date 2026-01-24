@@ -84,8 +84,18 @@ class SinhVienController extends Controller
 
     public function show(SinhVien $sinhVien)
     {
-        $sinhVien->load(['lop.khoa', 'user']);
-        return view('admin.sinh-viens.show', compact('sinhVien'));
+        $sinhVien->load(['lop.khoa', 'user', 'dangKyMonHocs.monHoc', 'dangKyMonHocs.diem', 'dangKyMonHocs.giangVien.user']);
+        
+        // Thống kê điểm
+        $diems = $sinhVien->dangKyMonHocs->pluck('diem')->filter();
+        $tongMonDangKy = $sinhVien->dangKyMonHocs->count();
+        $tongMonCoDiem = $diems->count();
+        $diemTrungBinh = $diems->avg('diem_trung_binh');
+        
+        // Thống kê theo trạng thái
+        $thongKe = $diems->groupBy('trang_thai')->map->count();
+        
+        return view('admin.sinh-viens.show', compact('sinhVien', 'tongMonDangKy', 'tongMonCoDiem', 'diemTrungBinh', 'thongKe'));
     }
 
     public function edit(SinhVien $sinhVien)

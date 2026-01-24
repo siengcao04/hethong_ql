@@ -6,7 +6,7 @@
 <div class="container-fluid">
     <div class="row mb-4">
         <div class="col-12">
-            <h2 class="mb-3">📜 Lịch sử dự đoán AI</h2>
+            <h2 class="mb-3">Lịch sử dự đoán AI</h2>
         </div>
     </div>
 
@@ -34,7 +34,7 @@
                                 <td>{{ $dd->created_at->format('d/m/Y H:i') }}</td>
                                 <td>
                                     <strong>{{ $dd->sinhVien->ma_sinh_vien }}</strong><br>
-                                    <small>{{ $dd->sinhVien->ho_ten }}</small>
+                                    <small>{{ $dd->sinhVien->user->ho_ten }}</small>
                                 </td>
                                 <td>
                                     <span class="badge bg-secondary">{{ $dd->monHoc->ma_mon }}</span>
@@ -80,7 +80,7 @@
             </div>
 
             <div class="mt-3">
-                {{ $duDoans->links() }}
+                {{ $duDoans->links('pagination::bootstrap-5') }}
             </div>
         </div>
     </div>
