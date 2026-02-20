@@ -41,6 +41,6 @@ class DuDoanHocTapSeeder extends Seeder
             ]);
         }
 
-        $this->command->info('✓ Đã tạo ' . DuDoanHocTap::count() . ' dự đoán học tập');
+        $this->command->info(' Đã tạo ' . DuDoanHocTap::count() . ' dự đoán học tập');
     }
 }
